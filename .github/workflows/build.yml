@@ -10,7 +10,7 @@ defaults:
     shell: bash
 jobs:
   build_caddy_with_naive:
-    runs-on: [self-hosted]
+    runs-on: [self-hosted,ARM64]
     env:
       BUNDLE: caddy-forwardproxy-naive
     steps:
