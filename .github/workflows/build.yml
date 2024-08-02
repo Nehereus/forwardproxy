@@ -10,7 +10,7 @@ defaults:
     shell: bash
 jobs:
   build_caddy_with_naive:
-    runs-on: ubuntu-22.04
+    runs-on: [self-hosted]
     env:
       BUNDLE: caddy-forwardproxy-naive
     steps:
