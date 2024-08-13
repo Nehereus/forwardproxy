@@ -177,7 +177,7 @@ func (h *Handler) Provision(ctx caddy.Context) error {
 
 		h.upstream = upstreamURL
 			//the variable used to signify if the upstream given is a privateIP or not. The code is flawed as it only test the first ip resolved.
-		const isUpstreamPrivate bool = upstreamIps[0].IsPrivate()
+		var isUpstreamPrivate bool = upstreamIps[0].IsPrivate()
 		
 		if !isUpstreamPrivate && h.upstream.Scheme != "https" {
 			return errors.New("insecure schemes are only allowed to localhost upstreams")
