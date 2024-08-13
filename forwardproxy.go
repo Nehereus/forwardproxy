@@ -169,8 +169,11 @@ func (h *Handler) Provision(ctx caddy.Context) error {
 		if err != nil {
 			return fmt.Errorf("bad upstream URL: %v", err)
 		}
-		
-		upstreamIps, err := net.LookupIP(upstreamURL.Host)
+		upstreamHostname,upstreamPort, err := net.SplitHostPort(upstreamURL)
+		if err != nil {
+			return fmt.Errorf("bad upstream URL: cannot split hostname and port: %v", err)
+		}
+		upstreamIps, err := net.LookupIP(upstreamHostname)
 		if err != nil {
 			return fmt.Errorf("failed to lookup IP: %v", err)
 		}
