@@ -169,7 +169,7 @@ func (h *Handler) Provision(ctx caddy.Context) error {
 		if err != nil {
 			return fmt.Errorf("bad upstream URL: %v", err)
 		}
-		upstreamHostname,upstreamPort, err := net.SplitHostPort(upstreamURL.Host)
+		upstreamHostname, _, err := net.SplitHostPort(upstreamURL.Host)
 		if err != nil {
 			return fmt.Errorf("bad upstream URL: cannot split hostname and port: %v", err)
 		}
