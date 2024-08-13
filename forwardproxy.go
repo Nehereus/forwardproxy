@@ -169,9 +169,17 @@ func (h *Handler) Provision(ctx caddy.Context) error {
 		if err != nil {
 			return fmt.Errorf("bad upstream URL: %v", err)
 		}
-		h.upstream = upstreamURL
+		
+		upstreamIps, err := net.LookupIP(upstreamURL.Host)
+		if err != nil {
+			return fmt.Errorf("failed to lookup IP: %v", err)
+		}
 
-		if !isLocalhost(h.upstream.Hostname()) && h.upstream.Scheme != "https" {
+		h.upstream = upstreamURL
+			//the variable used to signify if the upstream given is a privateIP or not. The code is flawed as it only test the first ip resolved.
+		const isUpstreamPrivate bool = upstreamIps[0].IsPrivate()
+		
+		if !isUpstreamPrivate && h.upstream.Scheme != "https" {
 			return errors.New("insecure schemes are only allowed to localhost upstreams")
 		}
 
@@ -184,7 +192,7 @@ func (h *Handler) Provision(ctx caddy.Context) error {
 				return nil, err
 			}
 			d.Dialer = *dialer
-			if isLocalhost(h.upstream.Hostname()) && h.upstream.Scheme == "https" {
+			if isUpstreamPrivate && h.upstream.Scheme == "https" {
 				// disabling verification helps with testing the package and setups
 				// either way, it's impossible to have a legit TLS certificate for "127.0.0.1" - TODO: not true anymore
 				h.logger.Info("Localhost upstream detected, disabling verification of TLS certificate")
